@@ -40,6 +40,13 @@ dependencies:
   provider: ^6.1.2
   adaptive_theme: ^3.6.0
   flutter_svg: ^2.0.9
+  lottie: ^3.0.0
+  google_sign_in: ^6.2.1
+  cloud_firestore: ^4.15.9
+  fluttertoast: ^8.2.4
+  dropdown_button2: ^2.3.9
+  zoom_tap_animation: ^1.1.0
+
 
 dev_dependencies:
   flutter_test:
@@ -68,6 +75,7 @@ flutter:
     - assets/images/
     - assets/icons/
     - assets/fonts/
+    - assets/lotties/
   fonts:
     - family: Inter
       fonts:

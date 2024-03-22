@@ -2,17 +2,24 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sample_project/firebase_options.dart';
-import 'package:sample_project/screens/home/home_screen.dart';
-import 'package:sample_project/screens/login/login_screen.dart';
+import 'package:sample_project/routes.dart';
 import 'package:sample_project/utils/theme/app_theme.dart';
-import 'package:sample_project/view_models/login_view_model.dart';
+import 'package:sample_project/view_models/auth_view_model.dart';
 import 'package:adaptive_theme/adaptive_theme.dart';
+import 'package:sample_project/view_models/category_view_model.dart';
+import 'package:sample_project/view_models/products_view_model.dart';
+import 'package:sample_project/view_models/tab_view_model.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(MultiProvider(
-    providers: [ChangeNotifierProvider(create: (_) => LoginViewModel())],
+    providers: [
+      ChangeNotifierProvider(create: (_) => TabViewModel()),
+      ChangeNotifierProvider(create: (_) => AuthViewModel()),
+      ChangeNotifierProvider(create: (_) => CategoriesViewModel()),
+      ChangeNotifierProvider(create: (_) => ProductsViewModel()),
+    ],
     child: const MyApp(),
   ));
 }
@@ -32,7 +39,8 @@ class MyApp extends StatelessWidget {
             theme: theme,
             darkTheme: darktheme,
             themeMode: ThemeMode.system,
-            home: LoginScreen(),
+            initialRoute: RouteNames.splashScreen,
+            onGenerateRoute: AppRoutes.generateRoute,
           );
         });
   }

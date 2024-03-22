@@ -2,13 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:sample_project/utils/constants/app_constant.dart';
 import 'package:sample_project/utils/images/app_images.dart';
+import 'package:sample_project/utils/styles/app_text_style.dart';
 import '../../../utils/colors/app_colors.dart';
 
-class PasswordTextInput extends StatelessWidget {
-  PasswordTextInput({super.key, required this.controller, required this.onChanged});
+class PasswordTextInput extends StatefulWidget {
+  PasswordTextInput({super.key, required this.controller});
   final TextEditingController controller;
-  final Function (String) onChanged;
 
+  @override
+  State<PasswordTextInput> createState() => _PasswordTextInputState();
+}
+
+class _PasswordTextInputState extends State<PasswordTextInput> {
   bool passwordVisibility = true;
 
   @override
@@ -17,8 +22,11 @@ class PasswordTextInput extends StatelessWidget {
       color: Colors.transparent,
       elevation: 10,
       child: TextFormField(
-        controller: controller,
-        onChanged: onChanged,
+        style: Theme
+            .of(context)
+            .textTheme
+            .bodyMedium,
+        controller: widget.controller,
         obscureText: passwordVisibility,
         validator: (String? value) {
           if (value == null || value.isEmpty || value.length < 3 ||
@@ -40,14 +48,16 @@ class PasswordTextInput extends StatelessWidget {
               padding: const EdgeInsets.all(12.0),
               child: SvgPicture.asset(AppImages.password),
             ),
-            contentPadding: const EdgeInsets.all(16),
-            hintText: "Password",
+            contentPadding: const EdgeInsets.all(12),
+            labelText: "Password",
             suffixIcon: IconButton(onPressed: () {
               passwordVisibility = !passwordVisibility;
-                       },
+              setState(() {
+
+              });},
               icon: passwordVisibility ? Icon(Icons.visibility_off) : Icon(
                   Icons.visibility),),
-            hintStyle: Theme
+            labelStyle: Theme
                 .of(context)
                 .textTheme
                 .bodyMedium,
@@ -66,5 +76,4 @@ class PasswordTextInput extends StatelessWidget {
       ),
     );
   }
-
 }
