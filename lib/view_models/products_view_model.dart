@@ -2,11 +2,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:sample_project/utils/constants/app_constant.dart';
 import 'package:sample_project/utils/utility_functions.dart';
-
 import '../data/models/product_model.dart';
+import '../services/local_notification_service.dart';
 
 class ProductsViewModel extends ChangeNotifier {
   bool _isLoading = false;
+  int id=1;
 
   bool get getLoader => _isLoading;
 
@@ -20,18 +21,16 @@ class ProductsViewModel extends ChangeNotifier {
             event.docs.map((doc) => ProductModel.fromJson(doc.data())).toList(),
       );
 
-  Future<void> getProductsByCategory(String categoryDocId) async {
-    _notify(true);
-    await FirebaseFirestore.instance
+  Stream<List<ProductModel>> getProductsByCategory(String categoryDocId) {
+    return FirebaseFirestore.instance
         .collection(AppConstants.products)
         .where("category_id", isEqualTo: categoryDocId)
-        .get()
-        .then((snapshot) {
-      categoryProduct =
-          snapshot.docs.map((e) => ProductModel.fromJson(e.data())).toList();
-    });
-    _notify(false);
+        .snapshots()
+        .map((snapshot) => snapshot.docs
+        .map((doc) => ProductModel.fromJson(doc.data()))
+        .toList());
   }
+
 
   insertProducts(ProductModel productModel, BuildContext context) async {
     try {
@@ -45,7 +44,7 @@ class ProductsViewModel extends ChangeNotifier {
           .doc(cf.id)
           .update({"doc_id": cf.id});
 
-      _notify(false);
+     _notify(false);
     } on FirebaseException catch (error) {
       if (!context.mounted) return;
       showSnackbar(

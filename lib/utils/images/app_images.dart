@@ -17,6 +17,8 @@ class AppImages {
   static const String search="assets/icons/search.svg";
   static const String products="assets/icons/products.svg";
   static const String category="assets/icons/category.svg";
+  static const String news="assets/icons/news.svg";
+  static const String notification="assets/icons/notification.svg";
   static const String loading="assets/lotties/loading.json";
 
 

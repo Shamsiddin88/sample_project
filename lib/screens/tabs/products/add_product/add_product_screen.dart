@@ -1,13 +1,17 @@
-import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sample_project/data/models/category_model.dart';
+import 'package:sample_project/data/api_provider/api_provider.dart';
 import 'package:sample_project/data/models/product_model.dart';
 import 'package:sample_project/utils/colors/app_colors.dart';
 import 'package:sample_project/utils/project_extensions.dart';
 import 'package:sample_project/utils/utilities.dart';
+import 'package:sample_project/view_models/news_view_model.dart';
+import 'package:sample_project/view_models/notification_view_model.dart';
 import 'package:sample_project/view_models/products_view_model.dart';
 
+import '../../../../data/models/notification_model.dart';
+import '../../../../services/local_notification_service.dart';
 import '../../../../utils/styles/app_text_style.dart';
 import '../../../../view_models/category_view_model.dart';
 
@@ -21,17 +25,53 @@ class AddProductScreen extends StatefulWidget {
 class _AddProductScreenState extends State<AddProductScreen> {
   ProductModel productModel = ProductModel.initialValue;
   String? selectedValue;
+  String fcmToken = "";
 
+  void init() async {
+    fcmToken = await FirebaseMessaging.instance.getToken() ?? "";
+    debugPrint("FCM TOKEN:$fcmToken");
+    final token = await FirebaseMessaging.instance.getAPNSToken();
+    debugPrint("getAPNSToken : ${token.toString()}");
+    LocalNotificationService.localNotificationService;
+    //Foreground
+    FirebaseMessaging.onMessage.listen(
+          (RemoteMessage remoteMessage) {
+        if (remoteMessage.notification != null) {
+          LocalNotificationService().showNotification(
+            title: remoteMessage.notification!.title!,
+            body: remoteMessage.notification!.body!,
+            id: DateTime.now().second.toInt(),
+          );
 
+          debugPrint(
+              "FOREGROUND NOTIFICATION:${remoteMessage.notification!.title}");
+        }
+      },
+    );
+    //Background
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage remoteMessage) {
+      debugPrint("ON MESSAGE OPENED APP:${remoteMessage.notification!.title}");
+    });
+    // Terminated
+    FirebaseMessaging.instance.getInitialMessage().then((message) {
+      if (message != null) {
+        debugPrint("TERMINATED:${message.notification?.title}");
+      }
+    });
+  }
 
   @override
+  void initState() {
+    init();
+    super.initState();
+  }
+
+ @override
   Widget build(BuildContext context) {
-    final categoriesViewModel = Provider.of<CategoriesViewModel>(context);
-    categoriesViewModel.getCategories();
     return Scaffold(
         appBar: AppBar(
           backgroundColor: AppColors.c_1317DD,
-          title: Text("Mahsulot qo'shish"),
+          title: Text("Mahsulot qo'shish", style: AppTextStyle.rubikBold.copyWith(color: AppColors.white),)
         ),
         body: SingleChildScrollView(
           child: Padding(
@@ -155,11 +195,12 @@ class _AddProductScreenState extends State<AddProductScreen> {
                           ),
                           value: selectedValue,
                           onChanged: (String? value) {
+                              setState(() {
+                                selectedValue = value;
+                                final selectedCategory = categories.firstWhere((category) => category.categoryName == value);
+                                productModel = productModel.copyWith(categoryId: selectedCategory.docId); // Assuming 'id' is the property holding the categoryId
 
-                              selectedValue = value;
-                              final selectedCategory = categories.firstWhere((category) => category.categoryName == value);
-                              productModel = productModel.copyWith(categoryId: selectedCategory.docId); // Assuming 'id' is the property holding the categoryId
-
+                              });
                           },
                           items: categories
                               .map((category) => DropdownMenuItem<String>(
@@ -191,6 +232,27 @@ class _AddProductScreenState extends State<AddProductScreen> {
                         context
                             .read<ProductsViewModel>()
                             .insertProducts(productModel, context);
+                        //------------------------------LocalNotification----------------------------------
+                        NotificationModel notification = NotificationModel(
+                            title: "${productModel.productName} nomli mahsulot qo'shildi!",
+                            id: DateTime.now().millisecond,
+                            body: "Ma'lumot olishingiz mumkin"
+                        );
+                        context.read<NotificationViewModel>().addNotification(notification);
+                        LocalNotificationService().showNotification(
+                          title: notification.title,
+                          body: notification.body,
+                          id: notification.id,
+                        );
+                        //------------------------------PushNotification----------------------------------
+                        context.read<NewsViewModel>().addPushNotification(notification);
+                        String messageId = await ApiProvider().sendNotificationToUsers(
+                          fcmToken: fcmToken,
+                          title: notification.title,
+                          body: "Mahsulot haqida ma'lumot olishingiz mumkin",
+                        );
+                        debugPrint("MESSAGE ID:$messageId");
+
                         Navigator.pop(context);
                       } else {
                         showErrorMessage("ERROR");
@@ -200,7 +262,23 @@ class _AddProductScreenState extends State<AddProductScreen> {
                       "Saqlash",
                       style: AppTextStyle.rubikMedium
                           .copyWith(color: AppColors.white),
-                    ))
+                    )),
+                // TextButton(
+                //   child: const Text("Show Notification"),
+                //   onPressed: () {
+                //     NotificationModel notification = NotificationModel(
+                //       name: "Galaxy 12 nomli maxsulot qo'shildi!",
+                //       id: DateTime.now().millisecond
+                //     );
+                //     context.read<NotificationViewModel>().addNotification(notification);
+                //
+                //     LocalNotificationService().showNotification(
+                //       title: notification.name,
+                //       body: "notification.body",
+                //       id: notification.id,
+                //     );
+                //   },
+                // ),
               ])),
         ));
   }

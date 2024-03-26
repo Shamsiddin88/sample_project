@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
+import 'package:sample_project/screens/news/news_screen.dart';
 import 'package:sample_project/screens/tabs/cart/cart_screen.dart';
 import 'package:sample_project/screens/tabs/products/all_product/products_screen.dart';
 import 'package:sample_project/screens/tabs/profile/profile_screen.dart';
@@ -23,6 +24,7 @@ class _TabScreenState extends State<TabScreen> {
     ProductsScreen(),
     CategoriesScreen(),
     CartScreen(),
+    NewsScreen(),
     ProfileScreen(),
   ];
 
@@ -57,9 +59,15 @@ class _TabScreenState extends State<TabScreen> {
             ),
             BottomNavigationBarItem(
 
-              icon: SvgPicture.asset(AppImages.cart,height: 24, colorFilter: ColorFilter.mode(Colors.white, BlendMode.srcIn),),
-              label: "Cart",
-              activeIcon: SvgPicture.asset(AppImages.cart,height: 24, colorFilter: ColorFilter.mode(Theme.of(context).primaryColor, BlendMode.srcIn),),
+              icon: SvgPicture.asset(AppImages.notification,height: 24, colorFilter: ColorFilter.mode(Colors.white, BlendMode.srcIn),),
+              label: "Notification",
+              activeIcon: SvgPicture.asset(AppImages.notification,height: 24, colorFilter: ColorFilter.mode(Theme.of(context).primaryColor, BlendMode.srcIn),),
+            ),
+            BottomNavigationBarItem(
+
+              icon: SvgPicture.asset(AppImages.news,height: 24, colorFilter: ColorFilter.mode(Colors.white, BlendMode.srcIn),),
+              label: "News",
+              activeIcon: SvgPicture.asset(AppImages.news,height: 24, colorFilter: ColorFilter.mode(Theme.of(context).primaryColor, BlendMode.srcIn),),
             ),
             BottomNavigationBarItem(
               icon: SvgPicture.asset(AppImages.person,height: 24, colorFilter: ColorFilter.mode(Colors.white, BlendMode.srcIn),),

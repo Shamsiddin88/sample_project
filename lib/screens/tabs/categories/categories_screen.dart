@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sample_project/routes.dart';
+import 'package:sample_project/screens/tabs/categories/update_category/update_category_screen.dart';
 import 'package:sample_project/screens/tabs/products/product_category/product_category_screen.dart';
 import 'package:sample_project/utils/colors/app_colors.dart';
 import 'package:sample_project/utils/project_extensions.dart';
 import 'package:sample_project/utils/styles/app_text_style.dart';
 import 'package:zoom_tap_animation/zoom_tap_animation.dart';
-
 import '../../../data/models/category_model.dart';
 import '../../../view_models/category_view_model.dart';
 
@@ -52,7 +52,13 @@ class CategoriesScreen extends StatelessWidget {
                   (index) {
                     CategoryModel category = list[index];
                     return ZoomTapAnimation(
-                      onTap: (){Navigator.push(context, MaterialPageRoute(builder: (context)=>ProductCategoryScreen(categoryId: category.docId)));},
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ProductCategoryScreen(
+                                    categoryId: category.docId)));
+                      },
                       child: ListTile(
                         leading: Image.network(
                           category.imageUrl,
@@ -64,26 +70,59 @@ class CategoriesScreen extends StatelessWidget {
                           child: Row(
                             children: [
                               IconButton(
-                                onPressed: () {
-                                  context
-                                      .read<CategoriesViewModel>()
-                                      .deleteCategory(category.docId, context);
-                                },
+                                onPressed: ()
+                                {
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        content: Text(
+                                          "Kategoriya o'chirilsinmi",
+                                          style: TextStyle(
+                                            color: Colors.lightBlueAccent,
+                                            fontSize: 18.w(),
+                                            fontWeight: FontWeight.w700,
+                                          ),
+                                        ),
+                                        actions: <Widget>[
+                                          Row(
+                                            mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              TextButton(
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                },
+                                                child: Text("Yo'q"),
+                                              ),
+                                              TextButton(
+                                                onPressed: () async
+                                                {
+                                                  context
+                                                      .read<CategoriesViewModel>()
+                                                      .deleteCategory(category.docId, context);
+                                                  Navigator.pop(context);
+                                                },
+                                                child: Text('Ha'),
+                                              ),
+                                            ],
+                                          )
+                                        ],
+                                      );
+                                    },
+                                  );
+                                }
+                                ,
                                 icon: const Icon(Icons.delete),
                               ),
                               IconButton(
                                 onPressed: () {
-                                  context
-                                      .read<CategoriesViewModel>()
-                                      .updateCategory(
-                                        CategoryModel(
-                                          imageUrl:
-                                              "https://dnr.wisconsin.gov/sites/default/files/feature-images/ECycle_Promotion_Manufacturers.jpg",
-                                          categoryName: "Electronics",
-                                          docId: category.docId,
-                                        ),
-                                        context,
-                                      );
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              UpdateCategoryScreen(
+                                                  categoryModel: category)));
                                 },
                                 icon: const Icon(Icons.edit),
                               ),

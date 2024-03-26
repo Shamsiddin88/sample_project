@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sample_project/screens/tabs/products/product_info/product_info_screen.dart';
 import 'package:sample_project/screens/tabs/products/widgets/global_product_items.dart';
 import 'package:sample_project/utils/project_extensions.dart';
 import 'package:sample_project/view_models/products_view_model.dart';
-
+import 'package:zoom_tap_animation/zoom_tap_animation.dart';
 import '../../../../data/models/product_model.dart';
 import '../../../../routes.dart';
 import '../../../../utils/colors/app_colors.dart';
 import '../../../../utils/styles/app_text_style.dart';
+import '../../../../view_models/category_view_model.dart';
 
 class ProductsScreen extends StatefulWidget {
   const ProductsScreen({super.key});
@@ -17,6 +19,7 @@ class ProductsScreen extends StatefulWidget {
 }
 
 class _ProductsScreenState extends State<ProductsScreen> {
+  int id = 1;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,6 +32,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
         actions: [
           IconButton(
             onPressed: () {
+              context.read<CategoriesViewModel>().getCategories();
               Navigator.pushNamed(context, RouteNames.addProductRoute);
             },
             icon: Icon(
@@ -51,19 +55,20 @@ class _ProductsScreenState extends State<ProductsScreen> {
             List<ProductModel> list = snapshot.data as List<ProductModel>;
             return GridView.count(
                 crossAxisCount: 2,
-                childAspectRatio: 0.85,
+                childAspectRatio: 0.80,
                 children: List.generate(
                   list.length,
                   (index) {
                     ProductModel product = list[index];
-                    return GlobalProductItems(
-                        imageUrl:
-                            product.imageUrl,
-                        name: product.productName,
-                        price: product.price,
-                        onTap: () {},
-                        likeOnTap: () {},
-                        icon: Icons.favorite_border);
+                    return ZoomTapAnimation(
+                      onTap: (){Navigator.push(context, MaterialPageRoute(builder: (context)=>ProductInfoScreen(productModel: product,)));},
+                      child: GlobalProductItems(
+                          imageUrl:
+                              product.imageUrl,
+                          name: product.productName,
+                          price: product.price,
+                          icon: Icons.favorite_border),
+                    );
                   },
                 ));
           }

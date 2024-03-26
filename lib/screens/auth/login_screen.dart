@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -103,7 +105,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween
                     ,children: [
-                      IconButton(onPressed: (){}, icon: SvgPicture.asset(AppImages.google, height: 24.h(),)),
+                      IconButton(onPressed: (){context.read<AuthViewModel>().signInWithGoogle(context);}, icon: SvgPicture.asset(AppImages.google, height: 24.h(),)),
                       IconButton(onPressed: (){}, icon: SvgPicture.asset(AppImages.apple, height: 24.h(),)),
                       IconButton(onPressed: (){}, icon: SvgPicture.asset(AppImages.facebook, height: 24.h(),))
                     ],),

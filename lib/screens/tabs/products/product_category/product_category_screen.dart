@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sample_project/screens/tabs/products/widgets/global_product_items.dart';
-import 'package:sample_project/utils/project_extensions.dart';
 import 'package:sample_project/view_models/products_view_model.dart';
-
+import 'package:zoom_tap_animation/zoom_tap_animation.dart';
 import '../../../../data/models/product_model.dart';
-import '../../../../routes.dart';
 import '../../../../utils/colors/app_colors.dart';
 import '../../../../utils/styles/app_text_style.dart';
-import '../../../../view_models/category_view_model.dart';
+import '../product_info/product_info_screen.dart';
 
 class ProductCategoryScreen extends StatefulWidget {
   const ProductCategoryScreen({super.key, required this.categoryId});
@@ -26,14 +24,14 @@ class _ProductCategoryScreenState extends State<ProductCategoryScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.c_1317DD,
-        title: Text(
-          "Hamma mahsulotlar",
-          style: AppTextStyle.rubikBold.copyWith(color: AppColors.white),
-        ),
-       
+        // title: Text(
+        //   "Hamma mahsulotlar",
+        //   style: AppTextStyle.rubikBold.copyWith(color: AppColors.white),
+        // ),
+
       ),
       body: StreamBuilder<List<ProductModel>>(
-        stream: context.read<ProductsViewModel>().getProductsByCategory(widget.categoryId),
+        stream: context.watch<ProductsViewModel>().getProductsByCategory(widget.categoryId),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return Center(
@@ -49,14 +47,15 @@ class _ProductCategoryScreenState extends State<ProductCategoryScreen> {
                   list.length,
                       (index) {
                     ProductModel product = list[index];
-                    return GlobalProductItems(
-                        imageUrl:
-                        product.imageUrl,
-                        name: product.productName,
-                        price: product.price,
-                        onTap: () {},
-                        likeOnTap: () {},
-                        icon: Icons.favorite_border);
+                    return ZoomTapAnimation(
+                        onTap: () {Navigator.push(context, MaterialPageRoute(builder: (context)=>ProductInfoScreen(productModel: product,)));},
+                        child: GlobalProductItems(
+                          imageUrl:
+                          product.imageUrl,
+                          name: product.productName,
+                          price: product.price,
+                          icon: Icons.favorite_border),
+                    );
                   },
                 ));
           }
