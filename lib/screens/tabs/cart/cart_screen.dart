@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sample_project/screens/news/news_screen.dart';
+import 'package:sample_project/screens/permission/permission_screen.dart';
 import 'package:sample_project/utils/project_extensions.dart';
 import 'package:sample_project/utils/styles/app_text_style.dart';
 import 'package:sample_project/view_models/notification_view_model.dart';
@@ -31,6 +32,9 @@ class _CartScreenState extends State<CartScreen> {
           style: AppTextStyle.rubikBold.copyWith(color: AppColors.white),
         ),
         actions: [
+          TextButton(onPressed: (){
+            Navigator.push(context, MaterialPageRoute(builder: (context)=>PermissionScreen()));
+          }, child: Text("Permission", style: AppTextStyle.rubikBold.copyWith(color: Colors.white),))
 
 
         ],

@@ -1,8 +1,10 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:sample_project/data/api_provider/api_provider.dart';
 import 'package:sample_project/data/models/product_model.dart';
+import 'package:sample_project/screens/widgets/universal_button.dart';
 import 'package:sample_project/utils/colors/app_colors.dart';
 import 'package:sample_project/utils/project_extensions.dart';
 import 'package:sample_project/utils/utilities.dart';
@@ -14,6 +16,7 @@ import '../../../../data/models/notification_model.dart';
 import '../../../../services/local_notification_service.dart';
 import '../../../../utils/styles/app_text_style.dart';
 import '../../../../view_models/category_view_model.dart';
+import '../../../../view_models/image_view_model.dart';
 
 class AddProductScreen extends StatefulWidget {
   const AddProductScreen({super.key});
@@ -65,7 +68,9 @@ class _AddProductScreenState extends State<AddProductScreen> {
     init();
     super.initState();
   }
-
+  final ImagePicker picker = ImagePicker();
+  String storagePath = "";
+  String imageUrl = "";
  @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -154,30 +159,30 @@ class _AddProductScreenState extends State<AddProductScreen> {
                           borderRadius: BorderRadius.circular(12))),
                 ),
                 20.getH(),
-                TextField(
-                  textInputAction: TextInputAction.done,
-                  onChanged: (v) {
-                    productModel = productModel.copyWith(imageUrl: v);
-                  },
-                  decoration: InputDecoration(
-                      floatingLabelBehavior: FloatingLabelBehavior.always,
-                      fillColor: Colors.white,
-                      filled: true,
-                      hintMaxLines: 4,
-                      contentPadding:
-                          EdgeInsets.symmetric(horizontal: 12, vertical: 14),
-                      hintText: "Mahsulot rasmi URL",
-                      hintStyle: TextStyle(color: Colors.black, fontSize: 14),
-                      enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.black),
-                          borderRadius: BorderRadius.circular(12)),
-                      disabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.black),
-                          borderRadius: BorderRadius.circular(12)),
-                      focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: AppColors.black),
-                          borderRadius: BorderRadius.circular(12))),
-                ),
+                // TextField(
+                //   textInputAction: TextInputAction.done,
+                //   onChanged: (v) {
+                //     productModel = productModel.copyWith(imageUrl: v);
+                //   },
+                //   decoration: InputDecoration(
+                //       floatingLabelBehavior: FloatingLabelBehavior.always,
+                //       fillColor: Colors.white,
+                //       filled: true,
+                //       hintMaxLines: 4,
+                //       contentPadding:
+                //           EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+                //       hintText: "Mahsulot rasmi URL",
+                //       hintStyle: TextStyle(color: Colors.black, fontSize: 14),
+                //       enabledBorder: OutlineInputBorder(
+                //           borderSide: BorderSide(color: Colors.black),
+                //           borderRadius: BorderRadius.circular(12)),
+                //       disabledBorder: OutlineInputBorder(
+                //           borderSide: BorderSide(color: Colors.black),
+                //           borderRadius: BorderRadius.circular(12)),
+                //       focusedBorder: OutlineInputBorder(
+                //           borderSide: BorderSide(color: AppColors.black),
+                //           borderRadius: BorderRadius.circular(12))),
+                // ),
                 20.getH(),
                 Consumer<CategoriesViewModel>(
                   builder: (context, categoriesViewModel, child) {
@@ -219,6 +224,9 @@ class _AddProductScreenState extends State<AddProductScreen> {
                   },
                 ),
                 40.getH(),
+                UniversalButton(title: "Take photo", onTap: (){
+                  takeAnImage();
+                }),
                 TextButton(
                     style: TextButton.styleFrom(
                         padding: EdgeInsets.symmetric(
@@ -249,7 +257,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                         String messageId = await ApiProvider().sendNotificationToUsers(
                           fcmToken: fcmToken,
                           title: notification.title,
-                          body: "Mahsulot haqida ma'lumot olishingiz mumkin",
+                          body: notification.body,
                         );
                         debugPrint("MESSAGE ID:$messageId");
 
@@ -263,23 +271,82 @@ class _AddProductScreenState extends State<AddProductScreen> {
                       style: AppTextStyle.rubikMedium
                           .copyWith(color: AppColors.white),
                     )),
-                // TextButton(
-                //   child: const Text("Show Notification"),
-                //   onPressed: () {
-                //     NotificationModel notification = NotificationModel(
-                //       name: "Galaxy 12 nomli maxsulot qo'shildi!",
-                //       id: DateTime.now().millisecond
-                //     );
-                //     context.read<NotificationViewModel>().addNotification(notification);
-                //
-                //     LocalNotificationService().showNotification(
-                //       title: notification.name,
-                //       body: "notification.body",
-                //       id: notification.id,
-                //     );
-                //   },
-                // ),
+
               ])),
         ));
+  }
+
+  Future<void> _getImageFromCamera() async {
+    XFile? image = await picker.pickImage(
+      source: ImageSource.camera,
+      maxHeight: 1024,
+      maxWidth: 1024,
+    );
+    if (image != null && context.mounted) {
+      debugPrint("IMAGE PATH:${image.path}");
+      storagePath = "files/images/${image.name}";
+      imageUrl = await context.read<ImageViewModel>().uploadImage(
+        pickedFile: image,
+        storagePath: storagePath,
+      );
+      productModel=productModel.copyWith(imageUrl: imageUrl);
+
+
+      debugPrint("DOWNLOAD URL:$imageUrl");
+    }
+  }
+
+  Future<void> _getImageFromGallery() async {
+    XFile? image = await picker.pickImage(
+      source: ImageSource.gallery,
+      maxHeight: 1024,
+      maxWidth: 1024,
+    );
+    if (image != null && context.mounted) {
+      debugPrint("IMAGE PATH:${image.path}");
+      storagePath = "files/images/${image.name}";
+      imageUrl = await context.read<ImageViewModel>().uploadImage(
+        pickedFile: image,
+        storagePath: storagePath,
+      );
+      productModel=productModel.copyWith(imageUrl: imageUrl);
+
+      debugPrint("DOWNLOAD URL:$imageUrl");
+    }
+  }
+
+  takeAnImage() {
+    showModalBottomSheet(
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(16),
+              topRight: Radius.circular(16),
+            )),
+        context: context,
+        builder: (context) {
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(height: 12.h()),
+              ListTile(
+                onTap: () async {
+                  await _getImageFromGallery();
+                  Navigator.pop(context);
+                },
+                leading: const Icon(Icons.photo_album_outlined),
+                title: const Text("Gallereyadan olish"),
+              ),
+              ListTile(
+                onTap: () async {
+                  await _getImageFromCamera();
+                  Navigator.pop(context);
+                },
+                leading: const Icon(Icons.camera_alt),
+                title: const Text("Kameradan olish"),
+              ),
+              SizedBox(height: 24.h()),
+            ],
+          );
+        });
   }
 }

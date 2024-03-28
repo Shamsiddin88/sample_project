@@ -51,7 +51,7 @@ class _ProductCategoryScreenState extends State<ProductCategoryScreen> {
                         onTap: () {Navigator.push(context, MaterialPageRoute(builder: (context)=>ProductInfoScreen(productModel: product,)));},
                         child: GlobalProductItems(
                           imageUrl:
-                          product.imageUrl,
+                          product.imageUrl!,
                           name: product.productName,
                           price: product.price,
                           icon: Icons.favorite_border),

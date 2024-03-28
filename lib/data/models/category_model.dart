@@ -1,19 +1,21 @@
 class CategoryModel {
   final String docId;
   final String categoryName;
-  final String imageUrl;
+  final String? imageUrl;
+  final String? storagePath;
 
-  CategoryModel({
-    required this.imageUrl,
-    required this.categoryName,
-    required this.docId,
-  });
+  CategoryModel(
+      {this.imageUrl,
+      required this.categoryName,
+      required this.docId,
+      this.storagePath});
 
   factory CategoryModel.fromJson(Map<String, dynamic> json) {
     return CategoryModel(
       docId: json["doc_id"] as String? ?? "",
       imageUrl: json["image_url"] as String? ?? "",
       categoryName: json["category_name"] as String? ?? "",
+      storagePath: json["storage_path"] as String? ?? "",
     );
   }
 
@@ -22,6 +24,7 @@ class CategoryModel {
       "doc_id": "",
       "image_url": imageUrl,
       "category_name": categoryName,
+      "storage_path": storagePath
     };
   }
 
@@ -29,6 +32,7 @@ class CategoryModel {
     return {
       "image_url": imageUrl,
       "category_name": categoryName,
+      "storage_path": storagePath,
     };
   }
 
@@ -36,24 +40,24 @@ class CategoryModel {
     docId: "",
     imageUrl: "",
     categoryName: "",
+    storagePath: "",
   );
 
-
-  CategoryModel copyWith({
-    String? docId,
-    String? categoryName,
-    String? imageUrl,
-  }) {
+  CategoryModel copyWith(
+      {String? docId,
+      String? categoryName,
+      String? imageUrl,
+      String? storagePath}) {
     return CategoryModel(
       docId: docId ?? this.docId,
       categoryName: categoryName ?? this.categoryName,
       imageUrl: imageUrl ?? this.imageUrl,
+      storagePath: storagePath ?? this.storagePath,
     );
   }
 
   bool canAddCategoryModel() {
     if (categoryName.isEmpty) return false;
-    if (imageUrl.isEmpty) return false;
     return true;
   }
 }

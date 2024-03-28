@@ -3,22 +3,25 @@ class ProductModel {
   final String productName;
   final String productDescription;
   final double price;
-  final String imageUrl;
+  final String? imageUrl;
   final String categoryId;
+  final String? storagePath;
 
   ProductModel({
     required this.price,
-    required this.imageUrl,
+    this.imageUrl,
     required this.productName,
     required this.docId,
     required this.productDescription,
     required this.categoryId,
+    this.storagePath
   });
 
   factory ProductModel.fromJson(Map<String, dynamic> json) {
     return ProductModel(
       docId: json["doc_id"] as String? ?? "",
       imageUrl: json["image_url"] as String? ?? "",
+      storagePath: json["storage_path"] as String? ?? "",
       categoryId: json["category_id"] as String? ?? "",
       productName: json["product_name"] as String? ?? "",
       productDescription: json["product_description"] as String? ?? "",
@@ -34,6 +37,7 @@ class ProductModel {
       "product_description": productDescription,
       "price": price,
       "category_id": categoryId,
+      "storage_path":storagePath
     };
   }
 
@@ -44,6 +48,7 @@ class ProductModel {
       "product_description": productDescription,
       "price": price,
       "category_id": categoryId,
+      "storage_path":storagePath
     };
   }
 
@@ -54,6 +59,7 @@ class ProductModel {
     productName: "",
     productDescription: "",
     categoryId: "",
+    storagePath: ""
   );
 
 
@@ -64,6 +70,7 @@ class ProductModel {
     double? price,
     String? imageUrl,
     String? categoryId,
+    String? storagePath
     }) {
     return ProductModel(
       docId: docId ?? this.docId,
@@ -72,13 +79,13 @@ class ProductModel {
       imageUrl: imageUrl ?? this.imageUrl,
       price: price ?? this.price,
       categoryId: categoryId ?? this.categoryId,
+      storagePath: storagePath ?? this.storagePath
     );
   }
 
   bool canAddProductModel() {
     if (productName.isEmpty) return false;
     if (productDescription.isEmpty) return false;
-    if (imageUrl.isEmpty) return false;
     if (price == 0.0) return false;
     if (categoryId.isEmpty) return false;
     return true;

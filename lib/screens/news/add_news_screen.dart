@@ -37,7 +37,6 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
             body: remoteMessage.notification!.body!,
             id: DateTime.now().second.toInt(),
           );
-
           debugPrint(
               "FOREGROUND NOTIFICATION:${remoteMessage.notification!.title}");
         }
@@ -85,8 +84,8 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
                       hintMaxLines: 4,
                       contentPadding:
                       EdgeInsets.symmetric(horizontal: 12, vertical: 14),
-                      hintText: "Yangilik nomi",
-                      hintStyle: TextStyle(color: Colors.black, fontSize: 14),
+                      labelText: "Yangilik nomi",
+                      labelStyle: TextStyle(color: Colors.black, fontSize: 14),
                       enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: Colors.black),
                           borderRadius: BorderRadius.circular(12)),
@@ -110,8 +109,8 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
                       hintMaxLines: null,
                       contentPadding:
                       EdgeInsets.symmetric(horizontal: 12, vertical: 14),
-                      hintText: "Yangilik matni",
-                      hintStyle: TextStyle(color: Colors.black, fontSize: 14),
+                      labelText: "Yangilik matni",
+                      labelStyle: TextStyle(color: Colors.black, fontSize: 14),
                       enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: Colors.black),
                           borderRadius: BorderRadius.circular(12)),
@@ -166,7 +165,6 @@ class _AddNewsScreenState extends State<AddNewsScreen> {
                           .copyWith(color: AppColors.white),
                     )),
                 20.getH(),
-
                 TextButton(
                     style: TextButton.styleFrom(
                         padding: EdgeInsets.symmetric(

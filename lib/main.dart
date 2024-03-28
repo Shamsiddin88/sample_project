@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sample_project/services/firebase_options.dart';
 import 'package:sample_project/services/local_notification_service.dart';
+import 'package:sample_project/utils/permission_utils/app_permissions.dart';
+import 'package:sample_project/view_models/image_view_model.dart';
 import 'package:sample_project/view_models/news_view_model.dart';
 import 'package:sample_project/view_models/notification_view_model.dart';
 import 'data/local/storage_repository.dart';
@@ -28,6 +30,7 @@ Future <void> main() async {
         ChangeNotifierProvider(create: (_) => ProductsViewModel()),
         ChangeNotifierProvider(create: (_) => NotificationViewModel()),
         ChangeNotifierProvider(create: (_) => NewsViewModel()),
+        ChangeNotifierProvider(create: (_) => ImageViewModel()),
       ],
       child: const MyApp(),
     ),

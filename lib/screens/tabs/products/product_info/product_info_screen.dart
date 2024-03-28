@@ -56,7 +56,7 @@ class _ProductInfoScreenState extends State<ProductInfoScreen> {
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(20.w()),
                                   child: Image.network(
-                                    widget.productModel.imageUrl,
+                                    widget.productModel.imageUrl!,
                                     fit: BoxFit.cover,
                                   ),
                                 )),

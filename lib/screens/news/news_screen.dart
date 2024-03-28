@@ -5,12 +5,8 @@ import 'package:sample_project/screens/news/add_news_screen.dart';
 import 'package:sample_project/utils/project_extensions.dart';
 import 'package:sample_project/utils/styles/app_text_style.dart';
 import 'package:sample_project/view_models/news_view_model.dart';
-
-import '../../data/api_provider/api_provider.dart';
 import '../../data/local/storage_repository.dart';
-import '../../services/local_notification_service.dart';
 import '../../utils/colors/app_colors.dart';
-import '../../view_models/notification_view_model.dart';
 
 class NewsScreen extends StatefulWidget {
   const NewsScreen({super.key});
@@ -22,6 +18,12 @@ class NewsScreen extends StatefulWidget {
 class _NewsScreenState extends State<NewsScreen> {
 
   bool isSubscribe = false;
+
+  @override
+  void initState() {
+    isSubscribe=StorageRepository.getBool(key: "subscribe");
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,9 +56,8 @@ class _NewsScreenState extends State<NewsScreen> {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15))),
                 onPressed: () {
-                  isSubscribe = !isSubscribe; // Toggle the subscription status
+                  isSubscribe = !isSubscribe;
 
-                  // Update the subscription status on Firebase Messaging
                   if (isSubscribe) {
                     FirebaseMessaging.instance.subscribeToTopic("my_app_news");
                   } else {
@@ -119,69 +120,6 @@ class _NewsScreenState extends State<NewsScreen> {
           ),
         ),
       ),
-      // Container(
-      //   padding: const EdgeInsets.all(24),
-      //   width: double.infinity,
-      //   child:
-      //   Column(
-      //     children: [
-      //       TextButton(
-      //         onPressed: () {
-      //           FirebaseMessaging.instance.subscribeToTopic("my_app_news");
-      //         },
-      //         child: Text(
-      //           "Subscribe to topic: my_app_news",
-      //           style: AppTextStyle.rubikBold.copyWith(
-      //             fontSize: 24,color: Colors.black
-      //           ),
-      //         ),
-      //       ),
-      //       TextButton(
-      //         onPressed: () {
-      //           FirebaseMessaging.instance.unsubscribeFromTopic("my_app_news");
-      //         },
-      //         child: Text(
-      //           "Unsubscribe from topic: my_app_news",
-      //           style: AppTextStyle.rubikBold.copyWith(
-      //             fontSize: 24,color: Colors.black
-      //           ),
-      //         ),
-      //       ),
-      //       TextButton(
-      //         onPressed: () async {
-      //           String messageId = await ApiProvider().sendNotificationToUsers(
-      //             fcmToken: fcmToken,
-      //             title: "Bu test notification",
-      //             body: "Yana test notiifcation",
-      //           );
-      //           debugPrint("MESSAGE ID:$messageId");
-      //         },
-      //         child: Text(
-      //           "SEND MESSAGE TO USER",
-      //           style: AppTextStyle.rubikBold.copyWith(
-      //             fontSize: 24,color: Colors.black
-      //           ),
-      //         ),
-      //       ),
-      //       TextButton(
-      //         onPressed: () async {
-      //           String messageId = await ApiProvider().sendNotificationToUsers(
-      //             topicName: "my_app_news",
-      //             title: "Bu test notification",
-      //             body: "Yana test notiifcation",
-      //           );
-      //           debugPrint("MESSAGE ID:$messageId");
-      //         },
-      //         child: Text(
-      //           "SEND MESSAGE TO USERS",
-      //           style: AppTextStyle.rubikBold.copyWith(
-      //             fontSize: 24,color: Colors.black
-      //           ),
-      //         ),
-      //       ),
-      //     ],
-      //   ),
-      // ),
-    );
+       );
   }
 }

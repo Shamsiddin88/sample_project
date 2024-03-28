@@ -49,7 +49,7 @@ class CategoriesScreen extends StatelessWidget {
               children: [
                 ...List.generate(
                   list.length,
-                  (index) {
+                      (index) {
                     CategoryModel category = list[index];
                     return ZoomTapAnimation(
                       onTap: () {
@@ -61,7 +61,7 @@ class CategoriesScreen extends StatelessWidget {
                       },
                       child: ListTile(
                         leading: Image.network(
-                          category.imageUrl,
+                          category.imageUrl!,
                           width: 80,
                         ),
                         title: Text(category.categoryName),
@@ -100,7 +100,7 @@ class CategoriesScreen extends StatelessWidget {
                                                 {
                                                   context
                                                       .read<CategoriesViewModel>()
-                                                      .deleteCategory(category.docId, context);
+                                                      .deleteCategory(category, context);
                                                   Navigator.pop(context);
                                                 },
                                                 child: Text('Ha'),
@@ -143,4 +143,5 @@ class CategoriesScreen extends StatelessWidget {
       ),
     );
   }
+
 }
