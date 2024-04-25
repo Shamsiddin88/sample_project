@@ -11,7 +11,6 @@ import '../data/models/category_model.dart';
 class ImageViewModel extends ChangeNotifier {
   bool _isLoading = false;
 
-  // CategoryModel categoryModel= CategoryModel.initialValue;
 
 
   bool get getLoader => _isLoading;
@@ -25,7 +24,6 @@ class ImageViewModel extends ChangeNotifier {
 
     print(mountainsRef.name);
 
-// Create a reference to 'images/mountains.jpg'
     final mountainImagesRef = storageRef.child("images/$filename");
     try {
       _notify(true);

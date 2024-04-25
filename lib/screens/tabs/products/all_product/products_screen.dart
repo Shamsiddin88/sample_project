@@ -43,7 +43,8 @@ class _ProductsScreenState extends State<ProductsScreen> {
           )
         ],
       ),
-      body: StreamBuilder<List<ProductModel>>(
+      body:
+      StreamBuilder<List<ProductModel>>(
         stream: context.read<ProductsViewModel>().listenProducts(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
